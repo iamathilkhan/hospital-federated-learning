@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index.py" },
+    { "source": "/(.*)", "destination": "/auralis/dashboard/dist/$1" }
+  ],
+  "redirects": [
+    { "source": "/", "destination": "/index.html" }
+  ]
+}

@@ -6,8 +6,8 @@ import DriftMonitor from './components/DriftMonitor';
 import TrainingGraph from './components/TrainingGraph';
 import DiagnosticView from './components/DiagnosticView';
 
-const API_BASE = "http://localhost:8000";
-const WS_URL = "ws://localhost:8000/ws/events";
+const API_BASE = import.meta.env.PROD ? "/api" : "http://localhost:8000";
+const WS_URL = import.meta.env.PROD ? "" : "ws://localhost:8000/ws/events";
 
 function App() {
   const [activeTab, setActiveTab] = useState('world-map');
@@ -25,36 +25,46 @@ function App() {
   
   const ws = useRef(null);
 
+  const fetchData = async () => {
+    try {
+      const [nodesRes, statusRes, accRes, diagRes] = await Promise.all([
+        fetch(`${API_BASE}/nodes`),
+        fetch(`${API_BASE}/status`),
+        fetch(`${API_BASE}/accuracy`),
+        fetch(`${API_BASE}/diagnosis/sample`)
+      ]);
+      
+      const nodesData = await nodesRes.json();
+      const statusData = await statusRes.json();
+      const accData = await accRes.json();
+      const diagData = await diagRes.json();
+
+      setNodes(nodesData);
+      setLeader(statusData.raft_leader);
+      setRound(statusData.current_round);
+      
+      const history = accData.map(a => ({ ...a, baseline: 71 }));
+      setAccuracyHistory(history);
+      setDiagnosticSample(diagData);
+    } catch (err) {
+      console.warn("API disconnect. Retrying sync...");
+    }
+  };
+
   // Initial Data Fetch
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [nodesRes, statusRes, accRes, diagRes] = await Promise.all([
-          fetch(`${API_BASE}/nodes`),
-          fetch(`${API_BASE}/status`),
-          fetch(`${API_BASE}/accuracy`),
-          fetch(`${API_BASE}/diagnosis/sample`)
-        ]);
-        
-        const nodesData = await nodesRes.json();
-        const statusData = await statusRes.json();
-        const accData = await accRes.json();
-        const diagData = await diagRes.json();
-
-        setNodes(nodesData);
-        setLeader(statusData.raft_leader);
-        setRound(statusData.current_round);
-        setAccuracyHistory(accData.map(a => ({ ...a, baseline: 71 })));
-        setDiagnosticSample(diagData);
-      } catch (err) {
-        console.error("Failed to fetch initial state:", err);
-      }
-    };
     fetchData();
   }, []);
 
-  // WebSocket Connection
+  // WebSocket Connection & Polling Fallback for Serverless (Vercel)
   useEffect(() => {
+    if (!WS_URL) {
+        // In Production (Vercel), use polling as fallback for WebSockets
+        const poll = setInterval(fetchData, 5000);
+        setConnected(true);
+        return () => clearInterval(poll);
+    }
+
     const connect = () => {
         ws.current = new WebSocket(WS_URL);
         ws.current.onopen = () => {
@@ -63,8 +73,8 @@ function App() {
         };
         ws.current.onclose = () => {
             setConnected(false);
-            console.log("WebSocket Disconnected, retrying...");
-            setTimeout(connect, 3000);
+            console.log("WebSocket Local Closed, using local polling...");
+            setTimeout(connect, 5000);
         };
         ws.current.onmessage = (event) => {
             const payload = JSON.parse(event.data);
