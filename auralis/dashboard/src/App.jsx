@@ -27,25 +27,30 @@ function App() {
 
   const fetchData = async () => {
     try {
-      const [nodesRes, statusRes, accRes, diagRes] = await Promise.all([
-        fetch(`${API_BASE}/nodes`),
-        fetch(`${API_BASE}/status`),
-        fetch(`${API_BASE}/accuracy`),
-        fetch(`${API_BASE}/diagnosis/sample`)
+      const responses = await Promise.all([
+        fetch(`${API_BASE}/nodes`).catch(() => null),
+        fetch(`${API_BASE}/status`).catch(() => null),
+        fetch(`${API_BASE}/accuracy`).catch(() => null),
+        fetch(`${API_BASE}/diagnosis/sample`).catch(() => null)
       ]);
       
-      const nodesData = await nodesRes.json();
-      const statusData = await statusRes.json();
-      const accData = await accRes.json();
-      const diagData = await diagRes.json();
+      const [nodesData, statusData, accData, diagData] = await Promise.all(
+          responses.map(r => (r && r.ok) ? r.json() : null)
+      );
 
-      setNodes(nodesData);
-      setLeader(statusData.raft_leader);
-      setRound(statusData.current_round);
+      if (Array.isArray(nodesData)) setNodes(nodesData);
       
-      const history = accData.map(a => ({ ...a, baseline: 71 }));
-      setAccuracyHistory(history);
-      setDiagnosticSample(diagData);
+      if (statusData) {
+          if (statusData.raft_leader) setLeader(statusData.raft_leader);
+          if (statusData.current_round) setRound(statusData.current_round);
+      }
+      
+      if (Array.isArray(accData)) {
+          const history = accData.map(a => ({ ...a, baseline: 71 }));
+          setAccuracyHistory(history);
+      }
+      
+      if (diagData) setDiagnosticSample(diagData);
     } catch (err) {
       console.warn("API disconnect. Retrying sync...");
     }
