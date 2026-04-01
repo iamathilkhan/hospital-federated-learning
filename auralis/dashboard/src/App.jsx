@@ -41,7 +41,17 @@ function App() {
       if (Array.isArray(nodesData)) setNodes(nodesData);
       
       if (statusData) {
-          if (statusData.raft_leader) setLeader(statusData.raft_leader);
+          if (statusData.raft_leader && statusData.raft_leader !== leader) {
+              const time = new Date().toLocaleTimeString();
+              // Synthesize a leadership transition event for the UI
+              setElectionEvents(prev => [
+                { time, type: 'new_leader', message: `Stateless Consensus reached: ${statusData.raft_leader} elected.` },
+                ...prev.slice(0, 4)
+              ]);
+              setRecentElection(true);
+              setTimeout(() => setRecentElection(false), 3000);
+              setLeader(statusData.raft_leader);
+          }
           if (statusData.current_round) setRound(statusData.current_round);
       }
       
