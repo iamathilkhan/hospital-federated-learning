@@ -6,7 +6,7 @@
     "dev:server": "cd auralis/server && python app.py",
     "dev:simulator": "cd auralis/server && python simulator.py",
     "dev": "npm run dev:dashboard & npm run dev:server & npm run dev:simulator",
-    "build": "cd auralis/dashboard && npm install && npm run build",
+    "build": "cd auralis/dashboard && npm install && npm run build && cd ../.. && mkdir -p public && cp -r auralis/dashboard/dist/* public/",
     "install:dashboard": "cd auralis/dashboard && npm install"
   }
 }
