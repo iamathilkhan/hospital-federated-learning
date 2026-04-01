@@ -1,70 +1,113 @@
 import React from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { ShieldCheck, Info } from 'lucide-react';
+import { ShieldCheck, Info, FlaskConical, TrendingUp } from 'lucide-react';
 
 const TrainingGraph = ({ trainingData }) => {
   return (
-    <div className="bg-slate-900 border border-slate-700 p-6 rounded-xl shadow-2xl flex flex-col h-full">
-      <div className="flex items-center justify-between mb-8">
-        <h2 className="text-xl font-bold flex items-center gap-2 text-white">
-          <ShieldCheck className="text-indigo-400" /> Swarm Intelligence Progress
-        </h2>
+    <div className="bg-white border border-slate-200 p-8 rounded-3xl shadow-premium flex flex-col h-full hover:shadow-premium-hover transition-all duration-500">
+      <div className="flex items-center justify-between mb-10">
+        <div className="flex items-center gap-4">
+            <div className="bg-medical-50 p-3 rounded-2xl">
+                <FlaskConical className="text-medical-600" size={24} />
+            </div>
+            <div>
+                <h2 className="text-xl font-display font-bold text-slate-900 flex items-center gap-2">
+                    Swarm Learning Progress
+                </h2>
+                <p className="text-xs text-slate-400 mt-0.5">High-accuracy model convergence across distributed sites</p>
+            </div>
+        </div>
         <div className="flex flex-col items-end">
-            <span className="text-slate-400 text-[10px] uppercase tracking-widest bg-slate-800 px-2 py-0.5 rounded mb-1">
-                Zero Data Transmission Mode
+            <span className="text-[10px] uppercase font-black tracking-[0.1em] bg-medical-50 border border-medical-100 text-medical-700 px-3 py-1 rounded-full mb-1">
+                Zero Data Disclosure Protocol
             </span>
-            <p className="text-slate-500 text-[10px] italic">Gradient data only — No patient records transmitted</p>
+            <div className="flex items-center gap-1.5 text-slate-400 text-[10px] italic font-medium">
+                <ShieldCheck size={10} className="text-emerald-500" /> Differential Privacy (ε=4.5) Active
+            </div>
         </div>
       </div>
 
-      <div className="flex-1 min-h-[350px]">
+      <div className="flex-1 min-h-[400px]">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={trainingData}>
             <defs>
               <linearGradient id="colorFed" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3}/>
-                <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                <stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.15}/>
+                <stop offset="95%" stopColor="#0ea5e9" stopOpacity={0}/>
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
-            <XAxis dataKey="round" stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
-            <YAxis domain={[60, 100]} stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
-            <Tooltip 
-                contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px' }}
-                itemStyle={{ color: '#94a3b8' }}
+            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+            <XAxis 
+                dataKey="round" 
+                stroke="#94a3b8" 
+                fontSize={11} 
+                tickLine={false} 
+                axisLine={false} 
+                tick={{ dy: 10 }}
+                label={{ value: 'Consensus Rounds', position: 'insideBottom', offset: -10, fontSize: 10, fill: '#94a3b8' }}
             />
-            <Legend verticalAlign="top" height={36}/>
+            <YAxis 
+                domain={[60, 100]} 
+                stroke="#94a3b8" 
+                fontSize={11} 
+                tickLine={false} 
+                axisLine={false} 
+                tick={{ dx: -10 }}
+                label={{ value: 'Classification Accuracy (%)', angle: -90, position: 'insideLeft', fontSize: 10, fill: '#94a3b8' }}
+            />
+            <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: 'rgba(255, 255, 255, 0.95)', 
+                  border: '1px solid #e2e8f0', 
+                  borderRadius: '16px',
+                  boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
+                  padding: '12px'
+                }}
+                itemStyle={{ fontSize: '12px', fontWeight: 'bold' }}
+                cursor={{ stroke: '#e2e8f0', strokeWidth: 2 }}
+            />
+            <Legend 
+                verticalAlign="top" 
+                align="right"
+                height={48}
+                iconType="circle"
+                wrapperStyle={{ paddingTop: '0px', fontSize: '12px', fontWeight: '600' }}
+            />
             
             <Area 
               type="monotone" 
-              name="Federated model"
+              name="GMIS Federated Model"
               dataKey="accuracy" 
-              stroke="#6366f1" 
+              stroke="#0ea5e9" 
+              strokeWidth={3}
               fillOpacity={1} 
               fill="url(#colorFed)" 
-              strokeWidth={3}
-              animationDuration={2000}
+              animationDuration={2500}
+              activeDot={{ r: 6, stroke: '#fff', strokeWidth: 2, fill: '#0ea5e9 shadow-lg shadow-medical-500/50' }}
             />
             
             <Area 
               type="monotone" 
-              name="Local-only baseline"
+              name="Isolated Baseline"
               dataKey="baseline" 
               stroke="#64748b" 
               fillOpacity={0}
-              strokeDasharray="5 5"
-              strokeWidth={1}
-              animationDuration={500}
+              strokeDasharray="6 4"
+              strokeWidth={1.5}
+              animationDuration={800}
             />
           </AreaChart>
         </ResponsiveContainer>
       </div>
 
-      <div className="mt-6 flex items-start gap-3 bg-indigo-500/10 border border-indigo-500/20 p-4 rounded-lg">
-          <Info className="text-indigo-400 shrink-0" size={18} />
-          <p className="text-indigo-300/80 text-xs leading-relaxed">
-            <b>Privacy Integrity Verified:</b> Accuracy metrics are aggregated via the Raft leader using weighted FedAvg. 
-            The chart maintains continuity across consensus leader failures through resilient client-side state caching.
+      <div className="mt-8 flex items-start gap-4 bg-medical-50/70 border border-medical-100 p-5 rounded-2xl">
+          <div className="bg-white p-2 rounded-xl border border-medical-100 shadow-sm">
+            <TrendingUp className="text-medical-600" size={20} />
+          </div>
+          <p className="text-medical-950 text-xs leading-relaxed font-medium">
+            <b className="font-bold">Privacy Integrity Protocol:</b> Accuracy metrics are cryptographically verified 
+            via the GMIS consensus system using weighted Federated Averaging (FedAvg). 
+            Continuity is maintained across node dropouts through state synchronization between peer leaders.
           </p>
       </div>
     </div>

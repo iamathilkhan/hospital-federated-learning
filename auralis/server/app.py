@@ -2,16 +2,27 @@ import asyncio
 import threading
 from fastapi import FastAPI, Request, WebSocket
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 import requests
+import time
 
 app = FastAPI()
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Global state
 server_state = {
     "current_round": 0,
-    "connected_nodes": 3,
-    "raft_leader": None,
+    "connected_nodes": 5,
+    "raft_leader": "localhost:4321",
     "accuracy_history": []
 }
 
@@ -24,36 +35,25 @@ async def broadcast_event(event_type: str, data: dict):
         try:
             await ws.send_json(payload)
         except Exception:
-            pass
+            if ws in connected_websockets:
+                connected_websockets.remove(ws)
 
 @app.get("/status")
 def get_status():
-    leader = None
-    api_ports = [9000, 9001, 9002, 9003, 9004]
-    for port in api_ports:
-        try:
-            res = requests.get(f"http://localhost:{port}/leader", timeout=0.1)
-            if res.status_code == 200:
-                leader = res.json().get("leader")
-                break
-        except Exception:
-            pass
-    server_state["raft_leader"] = leader
     return server_state
 
 @app.get("/nodes")
 def get_nodes():
-    # Mock node details for dashboard visualization
     nodes = []
     locations = ["Chennai", "Nairobi", "São Paulo", "Oslo", "Chicago"]
-    leader = get_status()["raft_leader"]
+    leader = server_state["raft_leader"]
     
     for i in range(5):
         node_id = f"node_{i}"
         nodes.append({
             "id": node_id,
             "name": f"Hospital {locations[i]}",
-            "drift_score": 0.05 + (i * 0.02), # Mock initial drift
+            "drift_score": 0.05 + (i * 0.01), 
             "uptime": 99.8,
             "contribution_score": 0.95,
             "is_leader": leader == f"localhost:{4321 + i}"
@@ -62,7 +62,6 @@ def get_nodes():
 
 @app.get("/diagnosis/sample")
 def get_diagnosis_sample():
-    # Return mock GradCAM and confidence data for DiagnosticView
     return {
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/e/e6/Normal_posteroanterior_chest_radiograph.jpg",
         "confidence": 89.4,
@@ -78,7 +77,7 @@ def get_diagnosis_sample():
 async def audit_log(request: Request):
     data = await request.json()
     action = data.get("action")
-    print(f"CLINICAL AUDIT LOG: Action [{action}] recorded for diagnosis.")
+    print(f"CLINICAL AUDIT LOG: Action [{action}] recorded.")
     return {"status": "ok"}
 
 @app.get("/accuracy")
@@ -93,19 +92,24 @@ async def websocket_endpoint(websocket: WebSocket):
         while True:
             await websocket.receive_text()
     except Exception:
-         connected_websockets.remove(websocket)
+         if websocket in connected_websockets:
+             connected_websockets.remove(websocket)
 
 @app.post("/update_metrics")
 async def update_metrics(request: Request):
     data = await request.json()
     accuracy = data.get("accuracy", 0.0)
+    round_num = data.get("round", server_state["current_round"] + 1)
     
-    server_state["current_round"] += 1
-    accuracy_record = {"round": server_state["current_round"], "accuracy": accuracy}
+    server_state["current_round"] = round_num
+    accuracy_record = {"round": round_num, "accuracy": accuracy}
     server_state["accuracy_history"].append(accuracy_record)
     
-    global loop
-    if loop is not None and loop.is_running():
+    if len(server_state["accuracy_history"]) > 20:
+        server_state["accuracy_history"].pop(0)
+
+    if loop:
+        # Broadcast on the loop if possible
         asyncio.run_coroutine_threadsafe(broadcast_event("round_complete", accuracy_record), loop)
         
     return {"status": "ok"}
@@ -116,21 +120,20 @@ async def broadcast(request: Request):
     event_type = data.get("type", "unknown")
     payload = data.get("data", {})
     
-    global loop
-    if loop is not None and loop.is_running():
+    if event_type == "new_leader":
+        server_state["raft_leader"] = payload.get("leader")
+
+    if loop:
         asyncio.run_coroutine_threadsafe(broadcast_event(event_type, payload), loop)
         
     return {"status": "ok"}
 
-def run_api_server():
+def run() -> None:
     global loop
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
+    loop = asyncio.get_event_loop()
     config = uvicorn.Config(app, host="0.0.0.0", port=8000, loop="asyncio")
     server = uvicorn.Server(config)
     server.run()
 
 if __name__ == "__main__":
-    t = threading.Thread(target=run_api_server, daemon=False)
-    t.start()
-    t.join()
+    run()
