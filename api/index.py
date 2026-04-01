@@ -1,5 +1,7 @@
-from auralis.server.app import app
+import os
+import sys
 
-# This is the Vercel entry point for the FastAPI application.
-# It simply imports the 'app' from the server/app.py file.
-# Vercel handles the uvicorn/server mounting automatically.
+# Add the root directory to the sys.path so 'auralis' package can be found
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from auralis.server.app import app

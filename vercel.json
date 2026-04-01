@@ -1,10 +1,8 @@
 {
   "version": 2,
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index.py" },
-    { "source": "/(.*)", "destination": "/auralis/dashboard/dist/$1" }
-  ],
-  "redirects": [
-    { "source": "/", "destination": "/index.html" }
+    { "source": "/api/(.*)", "destination": "api/index.py" },
+    { "source": "/assets/(.*)", "destination": "auralis/dashboard/dist/assets/$1" },
+    { "source": "/(.*)", "destination": "auralis/dashboard/dist/index.html" }
   ]
 }
