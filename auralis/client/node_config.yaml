@@ -1,0 +1,11 @@
+node_id: 0
+data_path: "./data/nih_cxr_14"
+privacy_epsilon: 1.0
+drift_threshold: 0.15
+flower_server_addr: "127.0.0.1:8080"
+raft_peers: 
+  - "localhost:4321"
+  - "localhost:4322"
+  - "localhost:4323"
+  - "localhost:4324"
+  - "localhost:4325"

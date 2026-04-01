@@ -1,0 +1,17 @@
+pysyncobj
+numpy
+pytest
+flwr
+fastapi
+uvicorn
+websockets
+torch
+torchvision
+pyyaml
+requests
+opacus
+shap
+opencv-python
+matplotlib
+scipy
+httpx

@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  node0:
+    build: .
+    command: python raft_leader/leader_node.py 0
+    ports:
+      - "4321:4321"
+    networks:
+      auralis-net:
+        ipv4_address: 172.20.0.10
+
+  node1:
+    build: .
+    command: python raft_leader/leader_node.py 1
+    ports:
+      - "4322:4322"
+    networks:
+      auralis-net:
+        ipv4_address: 172.20.0.11
+
+  node2:
+    build: .
+    command: python raft_leader/leader_node.py 2
+    ports:
+      - "4323:4323"
+    networks:
+      auralis-net:
+        ipv4_address: 172.20.0.12
+
+  node3:
+    build: .
+    command: python raft_leader/leader_node.py 3
+    ports:
+      - "4324:4324"
+    networks:
+      auralis-net:
+        ipv4_address: 172.20.0.13
+
+  node4:
+    build: .
+    command: python raft_leader/leader_node.py 4
+    ports:
+      - "4325:4325"
+    networks:
+      auralis-net:
+        ipv4_address: 172.20.0.14
+
+networks:
+  auralis-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
