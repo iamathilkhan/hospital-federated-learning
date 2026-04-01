@@ -19,22 +19,22 @@ const WorldMap = ({ nodes, leader, recentElection }) => {
   };
 
   return (
-    <div className="bg-white p-1 rounded-3xl shadow-premium border border-slate-200 overflow-hidden h-full flex flex-col">
-      <div className="p-6 border-b border-slate-50 flex items-center justify-between">
+    <div className="bg-white p-1 rounded-2xl lg:rounded-3xl shadow-premium border border-slate-200 overflow-hidden h-full flex flex-col">
+      <div className="p-4 lg:p-6 border-b border-slate-50 flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-display font-bold text-slate-900 flex items-center gap-2">
-            <Globe className="text-medical-600" size={24} /> Global Swarm Topography
+          <h2 className="text-lg lg:text-xl font-display font-bold text-slate-900 flex items-center gap-2">
+            <Globe className="text-medical-600" size={20} /> <span className="truncate">Swarm Topography</span>
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">Real-time geospatial distribution of federated compute nodes</p>
+          <p className="text-[10px] lg:text-xs text-slate-400 mt-0.5">Real-time geospatial distribution</p>
         </div>
-        <div className="flex gap-2">
+        <div className="hidden sm:flex gap-2">
           <div className="flex items-center gap-1.5 px-3 py-1 bg-slate-50 rounded-full border border-slate-100 italic text-[10px] text-slate-500">
-            <ShieldCheck size={12} className="text-emerald-500" /> AES-256 Encrypted Tunnels
+            <ShieldCheck size={12} className="text-emerald-500" /> AES-256
           </div>
         </div>
       </div>
       
-      <div className="flex-1 relative min-h-[500px]">
+      <div className="flex-1 relative min-h-[300px] lg:min-h-[500px]">
         <MapContainer center={[20, 0]} zoom={2.5} scrollWheelZoom={false} className="h-full w-full">
           <TileLayer
             url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"

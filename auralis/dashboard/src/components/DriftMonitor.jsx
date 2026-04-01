@@ -4,21 +4,21 @@ import { AlertTriangle, Info, X, ShieldAlert, Activity, CheckCircle2 } from 'luc
 
 const DriftMonitor = ({ driftData, activeAlerts, onDismissAlert }) => {
   return (
-    <div className="bg-white border border-slate-200 p-8 rounded-3xl shadow-premium h-full flex flex-col hover:shadow-premium-hover transition-all duration-500">
-      <div className="flex items-center justify-between mb-10">
+    <div className="bg-white border border-slate-200 p-4 lg:p-8 rounded-2xl lg:rounded-3xl shadow-premium h-full flex flex-col hover:shadow-premium-hover transition-all duration-500">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8 lg:mb-10">
           <div className="flex items-center gap-4">
               <div className="bg-rose-50 p-3 rounded-2xl">
                   <Activity className="text-rose-600" size={24} />
               </div>
               <div>
-                  <h2 className="text-xl font-display font-bold text-slate-900 flex items-center gap-2">
+                  <h2 className="text-lg lg:text-xl font-display font-bold text-slate-900">
                         Clinical Distribution Drift
                   </h2>
-                  <p className="text-xs text-slate-400 mt-0.5">Statistical divergence monitoring for patient demographic shifts</p>
+                  <p className="text-[10px] lg:text-xs text-slate-400 mt-0.5">Statistical divergence monitoring</p>
               </div>
           </div>
-          <div className="px-4 py-1.5 bg-slate-50 border border-slate-200 rounded-full flex items-center gap-2">
-              <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest italic">KL-Divergence</span>
+          <div className="px-4 py-1.5 bg-slate-50 border border-slate-200 rounded-full flex items-center gap-2 self-start sm:self-auto">
+              <span className="text-[9px] lg:text-[10px] text-slate-400 font-black uppercase tracking-widest italic">KL-Divergence</span>
               <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
           </div>
       </div>

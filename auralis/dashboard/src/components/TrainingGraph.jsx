@@ -4,30 +4,30 @@ import { ShieldCheck, Info, FlaskConical, TrendingUp } from 'lucide-react';
 
 const TrainingGraph = ({ trainingData }) => {
   return (
-    <div className="bg-white border border-slate-200 p-8 rounded-3xl shadow-premium flex flex-col h-full hover:shadow-premium-hover transition-all duration-500">
-      <div className="flex items-center justify-between mb-10">
+    <div className="bg-white border border-slate-200 p-4 lg:p-8 rounded-2xl lg:rounded-3xl shadow-premium flex flex-col h-full hover:shadow-premium-hover transition-all duration-500">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8 lg:mb-10">
         <div className="flex items-center gap-4">
             <div className="bg-medical-50 p-3 rounded-2xl">
                 <FlaskConical className="text-medical-600" size={24} />
             </div>
             <div>
-                <h2 className="text-xl font-display font-bold text-slate-900 flex items-center gap-2">
-                    Swarm Learning Progress
+                <h2 className="text-lg lg:text-xl font-display font-bold text-slate-900">
+                    Learning Progress
                 </h2>
-                <p className="text-xs text-slate-400 mt-0.5">High-accuracy model convergence across distributed sites</p>
+                <p className="text-[10px] lg:text-xs text-slate-400 mt-0.5">Model convergence across sites</p>
             </div>
         </div>
-        <div className="flex flex-col items-end">
-            <span className="text-[10px] uppercase font-black tracking-[0.1em] bg-medical-50 border border-medical-100 text-medical-700 px-3 py-1 rounded-full mb-1">
-                Zero Data Disclosure Protocol
+        <div className="flex flex-col items-start sm:items-end w-full sm:w-auto">
+            <span className="text-[9px] lg:text-[10px] uppercase font-black tracking-[0.1em] bg-medical-50 border border-medical-100 text-medical-700 px-3 py-1 rounded-full mb-1">
+                Zero Disclosure Protocol
             </span>
-            <div className="flex items-center gap-1.5 text-slate-400 text-[10px] italic font-medium">
-                <ShieldCheck size={10} className="text-emerald-500" /> Differential Privacy (ε=4.5) Active
+            <div className="flex items-center gap-1.5 text-slate-400 text-[9px] lg:text-[10px] italic font-medium">
+                <ShieldCheck size={10} className="text-emerald-500" /> DP Active
             </div>
         </div>
       </div>
-
-      <div className="flex-1 min-h-[400px]">
+      
+      <div className="flex-1 min-h-[300px] lg:min-h-[400px]">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={trainingData}>
             <defs>
