@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { LayoutDashboard, Globe, Activity, FileText, AlertCircle, Signal, Terminal, FlaskConical, ShieldAlert } from 'lucide-react';
+import { LayoutDashboard, Globe, Activity, FileText, AlertCircle, Signal, Terminal, FlaskConical, ShieldAlert, MessageCircle } from 'lucide-react';
 import WorldMap from './components/WorldMap';
 import LeaderElection from './components/LeaderElection';
 import DriftMonitor from './components/DriftMonitor';
 import TrainingGraph from './components/TrainingGraph';
 import DiagnosticView from './components/DiagnosticView';
+import Chatbot from './components/Chatbot';
 
 const API_BASE = import.meta.env.PROD ? "/api" : "http://localhost:8000";
 const WS_URL = import.meta.env.PROD ? "" : "ws://localhost:8000/ws/events";
@@ -149,6 +150,7 @@ function App() {
     { id: 'training', label: 'Learning', icon: <Activity size={18} /> },
     { id: 'drift', label: 'Drift', icon: <AlertCircle size={18} /> },
     { id: 'diagnosis', label: 'Audit', icon: <FileText size={18} /> },
+    { id: 'chatbot', label: 'Clinical AI', icon: <MessageCircle size={18} /> },
     { id: 'election', label: 'Consensus', icon: <Terminal size={18} /> },
   ];
 
@@ -262,6 +264,7 @@ function App() {
               {activeTab === 'training' && <TrainingGraph trainingData={accuracyHistory} />}
               {activeTab === 'drift' && <DriftMonitor driftData={accuracyHistory} activeAlerts={activeAlerts} onDismissAlert={(i) => setActiveAlerts(a => a.filter((_, idx) => idx !== i))} />}
               {activeTab === 'diagnosis' && <DiagnosticView diagnosticData={diagnosticSample} onAuditAction={handleAuditAction} />}
+              {activeTab === 'chatbot' && <Chatbot systemState={{ round, nodes }} />}
               {activeTab === 'election' && <LeaderElection currentLeader={leader} term={12} lastElectionTime={45} electionEvents={electionEvents} roundInProgress={round} gradientsCollected={3} />}
             </div>
         </main>

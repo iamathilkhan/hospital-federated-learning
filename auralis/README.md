@@ -20,6 +20,12 @@ Auralis is a decentralized, privacy-preserving federated learning platform. It f
 - Python 3.8+
 - `pip install pysyncobj numpy pytest`
 
+### Database Initialization
+Before running the cluster, initialize the hospital FHIR database:
+```bash
+python ../scripts/db_setup.py
+```
+
 ### Running a 5-node Cluster Locally
 
 To simulate a cluster on localhost (ports 4321-4325), open 5 terminals and run:

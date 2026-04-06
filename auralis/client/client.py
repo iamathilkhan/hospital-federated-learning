@@ -10,8 +10,8 @@ import base64
 import os
 from opacus import PrivacyEngine
 
-from data_loader import load_data
-from model.cnn import get_resnet18, train_one_epoch, evaluate
+from sql_data_loader import load_sql_data
+from model.tabular_model import get_tabular_model, train_one_epoch, evaluate
 
 def set_parameters(model, parameters):
     params_dict = zip(model.state_dict().keys(), parameters)
@@ -25,13 +25,14 @@ class AuralisClient(fl.client.NumPyClient):
             
         self.node_id = override_node_id if override_node_id is not None else self.config["node_id"]
         
-        # Load the new 14-class model
-        self.model = get_resnet18(num_classes=14)
+        # Load the new tabular model (10 input features, 14 output classes)
+        self.model = get_tabular_model(input_dim=10, num_classes=14)
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model.to(self.device)
         
-        self.train_loader, self.val_loader = load_data(
-            self.config["data_path"], 
+        db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "database-fhir", "hospital_fhir.db")
+        self.train_loader, self.val_loader = load_sql_data(
+            db_path, 
             self.node_id
         )
         
@@ -62,8 +63,7 @@ class AuralisClient(fl.client.NumPyClient):
             self.model, 
             self.train_loader, 
             self.optimizer, 
-            self.device, 
-            self.privacy_engine
+            self.device
         )
         
         new_params = self.get_parameters(config)

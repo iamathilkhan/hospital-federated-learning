@@ -15,7 +15,7 @@
 - **Consensus Orchestration**: Fault-tolerant leader election ensuring reliable gradient aggregation across distributed nodes.
 - **Weighted Federated Averaging**: Advanced aggregation weighting systems based on data quality, clinical drift, and node uptime.
 - **Clinical Drift Monitoring**: Real-time statistical analysis to detect and mitigate data distribution shifts across hospital sites.
-- **Model Explainability**: Integrated confidence scoring and GradCAM-based diagnostic interpretability.
+- **Model Explainability**: Integrated confidence scoring and tabular SHAP-based diagnostic interpretability.
 - **Executive Dashboard**: Professional interface for real-time swarm monitoring and diagnostic auditing.
 - **Interoperability**: Standardized adapters for integration with existing healthcare data ecosystems.
 
@@ -65,10 +65,11 @@ api/                     # Vercel serverless entry points
 auralis/
 ├── dashboard/           # React professional monitoring interface
 ├── server/              # FastAPI backend and consensus logic
-├── model/               # CNN architectures with explainability
+├── model/               # Tabular MLP architectures with explainability
 ├── raft_leader/         # Consensus protocol implementation
 ├── drift_detector/      # Statistical monitoring suite
-└── fhir_adapter/        # Medical data interoperability layer
+├── fhir_adapter/        # Medical data interoperability layer
+└── database-fhir/       # SQL-based FHIR hospital database
 ```
 
 ## Verification and Testing

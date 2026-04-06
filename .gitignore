@@ -217,3 +217,8 @@ typings/
 # Temporary files
 *.tmp
 *.temp
+
+# Database files
+*.db
+*.sqlite3
+database-fhir/

@@ -6,6 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 import requests
 import time
+import math
+from auralis.model.chatbot import get_chatbot
 
 app = FastAPI()
 
@@ -156,6 +158,26 @@ async def broadcast(request: Request):
         asyncio.run_coroutine_threadsafe(broadcast_event(event_type, payload), loop)
         
     return {"status": "ok"}
+
+@app.post("/api/chatbot/ask")
+async def chatbot_ask(request: Request):
+    data = await request.json()
+    question = data.get("question")
+    
+    # Get current simulated state to inform the chatbot context
+    sim = get_simulated_state()
+    nodes = get_nodes() # This returns the list of node objects
+    
+    server_state = {
+        "current_round": sim["current_round"],
+        "accuracy": sim["accuracy"],
+        "nodes": nodes
+    }
+    
+    bot = get_chatbot()
+    answer = bot.ask(question, server_state)
+    
+    return {"answer": answer}
 
 def run() -> None:
     global loop
